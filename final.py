@@ -61,14 +61,14 @@ def text_to_speech(text):
 
 st.set_page_config(page_title="Q&A Demo")
 st.header("ChatBot - LLM Application")
-st.write(f":blue[This application is enabled with both TTS and STT.]")
+st.write(f":blue[This application is enabled with both TTS and STT, It may take few seconds for conversion into text and generating response.]")
 st.subheader("Step to follow:")
 with st.expander("Click to see steps"):
     st.write(f"**Step 1:** Click the :blue[Start and Convert] button to access the mic")
     st.write(f"**Step 2:** Press on the mic symbol and record the question")
     st.write(f"**Step 3:** Press on the mic symbol to stop the recording")
     st.write(f"**Step 4:** Press on :blue[Start and Convert] again to enable STT conversion, it takes a few seconds to convert.")
-    st.write(f"**Step 5:** Press on :blue[Generate] to generate the response from LLM")
+    st.write(f"**Step 5:** Press on :blue[Generate] to generate the response from LLM, it may take a few seconds")
     st.write(f"**Step 6:** Click on the play button to listen to the response of the bot")
 
 
