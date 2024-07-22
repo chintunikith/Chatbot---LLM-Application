@@ -7,7 +7,9 @@ from audio_recorder_streamlit import audio_recorder
 from gtts import gTTS
 from io import BytesIO
 
+
 load_dotenv()
+
 
 genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
 model = genai.GenerativeModel("gemini-pro")
@@ -32,7 +34,9 @@ def speech_to_text(audio_file):
         response.raise_for_status()  
         result = response.json()
         
+        
         print("Deepgram response:", result)
+        
         
         transcript = result.get('results', {}).get('channels', [{}])[0].get('alternatives', [{}])[0].get('transcript', "")
         return transcript
@@ -54,9 +58,8 @@ def text_to_speech(text):
         st.error(f"Error generating speech: {e}")
         return None
 
-# Set page configuration with light theme
-st.set_page_config(page_title="Q&A Demo", page_icon="🗣️")
 
+st.set_page_config(page_title="Q&A Demo")
 st.header("ChatBot - LLM Application")
 st.write(f":blue[This application is enabled with both TTS and STT.]")
 st.subheader("Step to follow:")
@@ -67,6 +70,7 @@ with st.expander("Click to see steps"):
     st.write(f"**Step 4:** Press on :blue[Start and Convert] again to enable STT conversion, it takes a few seconds to convert.")
     st.write(f"**Step 5:** Press on :blue[Generate] to generate the response from LLM")
     st.write(f"**Step 6:** Click on the play button to listen to the response of the bot")
+
 
 if 'chat_history' not in st.session_state:
     st.session_state['chat_history'] = []
@@ -81,18 +85,19 @@ st.session_state['audio_data'] = audio_recorder()
 
 if st.button("Start & Convert"):
     if st.session_state['audio_data']:
-        with st.spinner("Converting..."):
-            st.session_state['transcript'] = speech_to_text(st.session_state['audio_data'])
+        
+        st.session_state['transcript'] = speech_to_text(st.session_state['audio_data'])
         st.write("Question:", st.session_state['transcript'])
     else:
         st.warning("No audio recorded. Please start recording.")
 
+
 if st.button("Generate"):
     transcript = st.session_state['transcript']
     if transcript:
-        with st.spinner("Loading..."):
-            response = get_gemini_response(transcript)
+        response = get_gemini_response(transcript)
         if response:
+            
             st.session_state['chat_history'].append(("👤", transcript))
             
             st.subheader("Response:")
@@ -102,9 +107,11 @@ if st.button("Generate"):
             
             st.write(f"🤖 :blue[Bot:] {response_text}")
 
+            
             audio_bytes = text_to_speech(response_text)
             if audio_bytes:
                 st.audio(audio_bytes, format='audio/mp3')
+            
             
             st.session_state['chat_history'].append(("🤖", response_text))
         else:
@@ -112,14 +119,15 @@ if st.button("Generate"):
     else:
         st.warning("No transcript available. Please convert audio first.")
 
+
 st.subheader("The Chat History is")
 user_printed = False
 bot_printed = False
 for role, text in st.session_state['chat_history']:
-    if role == "👤" and not user_printed:
+    if role == "You 👤" and not user_printed:
         st.write(f"{role}: {text}")
         user_printed = True
-    elif role == "🤖" and not bot_printed:
+    elif role == "Bot 🤖" and not bot_printed:
         st.write(f"{role}: {text}")
         bot_printed = True
     else:
